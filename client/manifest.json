@@ -1,0 +1,18 @@
+{
+  "short_name": "EM",
+  "name": "EM",
+  "description": "EM",
+  "start_url": "/brb.html",
+  "id":"/brb.html",
+  "scope": "/",
+  "display": "fullscreen",
+  "icons": [
+    {
+      "src": "icon512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "theme_color": "#200200",
+  "background_color": "#242424"
+}
