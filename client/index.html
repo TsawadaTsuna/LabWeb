@@ -1,7 +1,9 @@
+<!DOCTYPE html>
 <html>
 <head>
 <title>#revolution#</title>
 <link rel="manifest" href="manifest.json">
+<script src="//ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 <body>
   <p id="bot">instalar<p>
@@ -16,8 +18,12 @@ if ('serviceWorker' in navigator) {
     console.log('ServiceWorker error: ', err);
     });
 }
-
-
+  $.post('/api/testdata', {
+    fecha : "15/09/2022",
+    hora : "14:00",
+    lat : "123456",
+    long : "123456"
+  })
 
 </script>
 </body>
