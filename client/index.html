@@ -1,12 +1,16 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>#revolution#</title>
+<title>Supply Map</title>
 <link rel="manifest" href="manifest.json">
 <script src="//ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 <body>
-  <p id="bot">instalar<p>
+  <section id = "map-container">
+    <div id ="locations-table">
+      
+    </div>
+  </section>
 <script>
 // Service Worker
 if ('serviceWorker' in navigator) {
@@ -18,12 +22,21 @@ if ('serviceWorker' in navigator) {
     console.log('ServiceWorker error: ', err);
     });
 }
-  $.post('/api/testdata', {
-    fecha : "15/09/2022",
-    hora : "14:00",
-    lat : "123456",
-    long : "123456"
-  })
+$.post('/api/get_new_points')
+      .then(response => JSON.parse(response))
+      .then(response => {
+        let markup = "<tr><th>Fecha</th><th>Hora</th><th>Latitud</th><th>Longitud</th></tr>"
+        console.log(response)
+        response.forEach(element => {
+          markup += "<tr>" 
+          markup += `<td>${element.fecha}</td>`
+          markup += `<td>${element.hora}</td>`
+          markup += `<td>${element.lat}</td>`
+          markup += `<td>${element.long}</td>`
+          markup += "</tr>"
+        })
+        $("#locations-table").html(markup)
+      })
 
 </script>
 </body>
