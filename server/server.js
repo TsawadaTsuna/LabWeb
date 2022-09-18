@@ -97,11 +97,10 @@ app.post('/api/get_new_points', (req, res) => {
     getPoints()
     .then(points_list =>JSON.stringify(points_list))
     .then(points_list=>{
-        console.log(points_list)
-        res.send(points_list)
-        .catch(
-            console.log("could not send points list")
-        )
+        if(points_list){
+            console.log(points_list)
+            res.send(points_list)
+        }
     })
     
 })

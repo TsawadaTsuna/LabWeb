@@ -11,33 +11,6 @@
       
     </div>
   </section>
-<script>
-// Service Worker
-if ('serviceWorker' in navigator) {
-     navigator.serviceWorker.register('/sw.js').then(function(registration) {
-    console.log('ServiceWorker registro : ',registration.scope);
-
-}).catch(function(err) {
-
-    console.log('ServiceWorker error: ', err);
-    });
-}
-$.post('/api/get_new_points')
-      .then(response => JSON.parse(response))
-      .then(response => {
-        let markup = "<tr><th>Fecha</th><th>Hora</th><th>Latitud</th><th>Longitud</th></tr>"
-        console.log(response)
-        response.forEach(element => {
-          markup += "<tr>" 
-          markup += `<td>${element.fecha}</td>`
-          markup += `<td>${element.hora}</td>`
-          markup += `<td>${element.lat}</td>`
-          markup += `<td>${element.long}</td>`
-          markup += "</tr>"
-        })
-        $("#locations-table").html(markup)
-      })
-
-</script>
+<script src="index.js"></script>
 </body>
 </html>
