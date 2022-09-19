@@ -6,13 +6,7 @@
   "id":"/brb.html",
   "scope": "/",
   "display": "fullscreen",
-  "icons": [
-    {
-      "src": "icon512.png",
-      "type": "image/png",
-      "sizes": "512x512"
-    }
-  ],
+  "icons": [],
   "theme_color": "#200200",
   "background_color": "#242424"
 }
