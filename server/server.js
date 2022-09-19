@@ -1,7 +1,7 @@
 const { json } = require("express");
 const express = require("express");
 const fs = require("fs");
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 8000;
 const app = express();
 const { MongoClient } = require("mongodb");
 // Replace the uri string with your connection string.
@@ -98,7 +98,6 @@ app.post('/api/get_new_points', (req, res) => {
     .then(points_list =>JSON.stringify(points_list))
     .then(points_list=>{
         if(points_list){
-            console.log(points_list)
             res.send(points_list)
         }
     })

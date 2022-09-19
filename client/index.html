@@ -1,16 +1,63 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Supply Map</title>
-<link rel="manifest" href="manifest.json">
-<script src="//ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <title>Supply Map</title>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 <body>
   <section id = "map-container">
     <div id ="locations-table">
-      
     </div>
+    <button id="myBtn">Get New Points</button>
   </section>
-<script src="index.js"></script>
+
+  <script type="text/javascript">
+  const element = document.getElementById("myBtn");
+  element.addEventListener("click", myFunction);
+
+  function myFunction() {
+    $.post('/api/get_new_points');
+  }
+  </script>
+
+  <script type="text/javascript">
+    const channel = new BroadcastChannel('sw-messages');
+    channel.addEventListener('message', event => {
+        if(event.data.type == 'point-update'){;
+            displayUpdate(event.data.payload);
+        }else{
+            console.log(event.data.payload)
+        }
+    });
+
+    async function displayUpdate(data) {
+        updatePage(data);
+    }
+
+    function updatePage(data){
+        let markup = "<tr><th>Fecha</th><th>Hora</th><th>Latitud</th><th>Longitud</th></tr>"
+        console.log(data)
+        data.forEach(element => {
+            markup += "<tr>" 
+            markup += `<td>${element.fecha}</td>`
+            markup += `<td>${element.hora}</td>`
+            markup += `<td>${element.lat}</td>`
+            markup += `<td>${element.long}</td>`
+            markup += "</tr>"
+        })
+        $("#locations-table").html(markup)
+    }
+
+    // Service Worker
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js')
+        .then(function(registration) {
+            console.log('ServiceWorker registro : ',registration.scope);
+        })
+        .catch(function(err) {
+            console.log('ServiceWorker error: ', err);
+        });
+    }
+  </script>
 </body>
 </html>
