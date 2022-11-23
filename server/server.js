@@ -76,6 +76,9 @@ app.get('/', (req, res) =>{
     res.sendFile('./client/index.html', {title:'pwa'});
 });
 
+app.get('/admin', (req, res) =>{
+    res.sendFile('admin.html', {title:'admin page', root:'./client'});
+});
 //Standard api call
 app.post('/api', (req, res) => {});
 

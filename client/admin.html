@@ -19,13 +19,13 @@
   }
 </style>
 <body>
-  <div>
-    <button id="myAdminBtn">go to admin</button> 
-</div>
+    <div>
+        <button id="HomeBtn">HOME</button> 
+    </div>
   <section id = "map-container">
     <div id ="locations-table">
     </div>
-    <button id="myBtn">Get New Points</button>
+    <button id="myBtn">Upload point</button>
   </section>
 
   <!--The div element for the map -->
@@ -77,16 +77,30 @@
     maxZoom: 20,
     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     }).addTo(map);
-  var marker = L.marker([20.73227709883036, -103.45429402177402]).addTo(map);
   const element = document.getElementById("myBtn");
-  element.addEventListener("click", myFunction);
-  const adbt = document.getElementById("myAdminBtn");
+  var marker = L.marker([20.73227709883036, -103.45429402177402]).addTo(map);
+  var lati;
+  var lng;
+  map.on('click', function(e) {
+    //alert("Lat, Lon : " + e.latlng.lat + ", " + e.latlng.lng)
+    var newLatLng = new L.LatLng(e.latlng.lat, e.latlng.lng);
+    marker.setLatLng(newLatLng); 
+    lati = e.latlng.lat
+    lng = e.latlng.lng
+    //var marker = L.marker([e.latlng.lat, e.latlng.lng]);
+    //map.addLayer(marker);
+    //marker.bindPopup("<b>Hello world!</b><br />I am a popup.").openPopup();
+    });
+
+    const adbt = document.getElementById("HomeBtn");
   adbt.addEventListener("click",adminftn);
   function adminftn(){
-    location.href = "/admin"
+    location.href = "/"
   }
+  element.addEventListener("click", myFunction);
+
   function myFunction() {
-    $.post('/api/get_new_points');
+    $.post('/api/insert_new_point',{fecha:"22/11/2025", hora:"14:30",lat:lati, long:lng});
   }
   </script>
 
