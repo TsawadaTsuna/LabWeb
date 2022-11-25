@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Supply Map</title>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.2/dist/leaflet.css"
+    integrity="sha256-sA+zWATbFveLLNqWO2gtiw3HL/lh1giY/Inf1BJ0z14="
+    crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.2/dist/leaflet.js"
+    integrity="sha256-o9N1jGDZrf5tS+Ft4gbIK7mYMipq9lqpVJ91xHSyKhg="
+    crossorigin=""></script>
+    <a>Supply drop. New point</a>
+</head>
+<style>
+  #map-container{
+    padding-left: 5%;
+  }
+  a{
+    padding-left: 40%;
+    font-size: 32px;
+    color: #fff;
+    text-shadow: 1px 0 0 #000, 0 -1px 0 #000, 0 1px 0 #000, -1px 0 0 #000;
+
+  }
+  #map {
+  height: 400px;
+  /* The height is 400 pixels /
+  width: 100%;
+  / The width is the width of the web page */
+
+  }
+  button {
+    padding: 0.5ch;
+    background-color: gainsboro;
+    font-weight: 100;
+    font-size: 14px;
+  }
+</style>
+<body>
+    <div>
+         
+    </div>
+  <section id = "map-container">
+    <button id="HomeBtn">HOME</button>
+    <div id ="locations-table">
+    </div>
+    
+    <input type="date" id="datesel" required>
+    <input type="time" id="timesel"  min="06:00" max="24:00" required>
+    <button id="myBtn">Upload point</button>
+  </section>
+
+  <!--The div element for the map -->
+  <div id="map"></div>
+
+  <!-- 
+   The `defer` attribute causes the callback to execute after the full HTML
+   document has been parsed. For non-blocking uses, avoiding race conditions,
+   and consistent behavior across browsers, consider loading using Promises
+   with https://www.npmjs.com/package/@googlemaps/js-api-loader.
+  -->
+  <!--
+
+    <script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAnHbcjzxNS8hgcx9P-1t9ewEiiGwVdBLQ&callback=initMap&v=weekly"
+    defer
+  ></script>
+
+
+  const mapa = 1
+    function initMap() {
+      // The location of Uluru
+      const tec = { lat: 20.73227709883036, lng: -103.45429402177402 };
+      // The map, centered at Uluru
+      const map = new google.maps.Map(document.getElementById("map"), {
+        zoom: 18,
+        center: tec,
+      });
+      // The marker, positioned at Uluru
+      //mapa = map
+      const marker = new google.maps.Marker({
+        position: tec,
+        map: map,
+      });
+      const suppoint = { lat: parseFloat(element.lat), lng: parseFloat(element.long) };
+            const marker = new google.maps.Marker({
+              position: suppoint,
+              map: mapa,
+            });
+    }
+
+  window.initMap = initMap;
+  -->
+  
+  <script type="text/javascript">
+    
+  var map = L.map('map').setView([20.73227709883036, -103.45429402177402], 15);
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 20,
+    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    }).addTo(map);
+  const element = document.getElementById("myBtn");
+  var marker = L.marker([20.73227709883036, -103.45429402177402]).addTo(map);
+  var lati;
+  var lng;
+  const dtsel = document.getElementById("datesel");
+  const timesel = document.getElementById("timesel");
+  map.on('click', function(e) {
+    //alert("Lat, Lon : " + e.latlng.lat + ", " + e.latlng.lng)
+    var newLatLng = new L.LatLng(e.latlng.lat, e.latlng.lng);
+    marker.setLatLng(newLatLng); 
+    lati = e.latlng.lat
+    lng = e.latlng.lng
+    //var marker = L.marker([e.latlng.lat, e.latlng.lng]);
+    //map.addLayer(marker);
+    //marker.bindPopup("<b>Hello world!</b><br />I am a popup.").openPopup();
+    });
+
+    const adbt = document.getElementById("HomeBtn");
+  adbt.addEventListener("click",adminftn);
+  function adminftn(){
+    location.href = "/"
+  }
+  element.addEventListener("click", myFunction);
+
+  function myFunction() {
+    $.post('/api/insert_new_point',{fecha:dtsel.value, hora:timesel.value,lat:lati, long:lng});
+  }
+  </script>
+
+  <script type="text/javascript">
+    const channel = new BroadcastChannel('sw-messages');
+    channel.addEventListener('message', event => {
+        if(event.data.type == 'point-update'){;
+            displayUpdate(event.data.payload);
+        }else{
+            console.log(event.data.payload)
+        }
+    });
+
+    async function displayUpdate(data) {
+        updatePage(data);
+    }
+
+    function updatePage(data){
+        let markup = "<tr><th>Fecha</th><th>Hora</th><th>Latitud</th><th>Longitud</th></tr>"
+        console.log(data)
+        data.forEach(element => {
+            markup += "<tr>" 
+            markup += `<td>${element.fecha}</td>`
+            markup += `<td>${element.hora}</td>`
+            markup += `<td>${element.lat}</td>`
+            markup += `<td>${element.long}</td>`
+            markup += "</tr>"
+            //var marker = L.marker([parseFloat(element.lat), parseFloat(element.long)]).addTo(map)
+            //.bindPopup('Fecha: '+element.fecha+'<br> hora: '+element.hora)
+            //.openPopup();;
+        })
+        $("#locations-table").html(markup)
+    }
+
+    // Service Worker
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js')
+        .then(function(registration) {
+            console.log('ServiceWorker registro : ',registration.scope);
+        })
+        .catch(function(err) {
+            console.log('ServiceWorker error: ', err);
+        });
+    }
+  </script>
+</body>
+</html>
