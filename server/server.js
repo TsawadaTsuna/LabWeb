@@ -1,7 +1,8 @@
 const { json } = require("express");
 const express = require("express");
 const fs = require("fs");
-const PORT = process.env.PORT || 8000;
+var https = require('https');
+const PORT = process.env.PORT || 8080;
 const app = express();
 const { MongoClient } = require("mongodb");
 // Replace the uri string with your connection string.
@@ -41,17 +42,17 @@ async function upload(data){
 
 async function connectToPoints(client){
     try{
-    const points = client.db("Rutas").collection("Puntos");
-    const cursor = points.find({}, {projection:{ _id: 0 }});
-    let new_points = []
-    await cursor.forEach((point) => {
-        new_points.push(point)
-    })
-    return new_points;
+        const points = client.db("Rutas").collection("Puntos");
+        const cursor = points.find({}, {projection:{ _id: 0 }}).limit(5);
+        let new_points = []
+        await cursor.forEach((point) => {
+            new_points.push(point)
+        })
+        return new_points;
 
-} finally {
-    await client.close();
-}
+    }catch (e) {
+        console.error(e);
+    } 
 }
 
 async function getPoints() {
@@ -107,6 +108,9 @@ app.post('/api/get_new_points', (req, res) => {
     
 })
 
-app.listen(PORT, () => {
-    console.log(`Server listening on ${PORT}`);
-});
+https.createServer({
+    key: fs.readFileSync('key.pem'),
+    cert: fs.readFileSync('cert.pem')
+  },app).listen(PORT, function(){
+     console.log(`https Server listening on ${PORT}`);
+ })
