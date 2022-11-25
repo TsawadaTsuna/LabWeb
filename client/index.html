@@ -9,23 +9,43 @@
     <script src="https://unpkg.com/leaflet@1.9.2/dist/leaflet.js"
     integrity="sha256-o9N1jGDZrf5tS+Ft4gbIK7mYMipq9lqpVJ91xHSyKhg="
     crossorigin=""></script>
+    <a>Supply drop</a>
 </head>
 <style>
+  #map-container{
+    padding-left: 5%;
+  }
+  a{
+    padding-left: 45%;
+    font-size: 32px;
+    color: #fff;
+    text-shadow: 1px 0 0 #000, 0 -1px 0 #000, 0 1px 0 #000, -1px 0 0 #000;
+
+  }
   #map {
   height: 400px;
-  /* The height is 400 pixels */
+  /* The height is 400 pixels /
   width: 100%;
-  /* The width is the width of the web page */
+  / The width is the width of the web page */
+
+  }
+  button {
+    padding: 0.5ch;
+    background-color: gainsboro;
+    font-weight: 100;
+    font-size: 14px;
   }
 </style>
 <body>
   <div>
-    <button id="myAdminBtn">go to admin</button> 
+     
 </div>
   <section id = "map-container">
-    <div id ="locations-table">
+    <!--<div id ="locations-table">
     </div>
+  -->
     <button id="myBtn">Get New Points</button>
+    <button id="myAdminBtn">go to admin</button>
   </section>
 
   <!--The div element for the map -->
@@ -109,10 +129,10 @@
         console.log(data)
         data.forEach(element => {
             markup += "<tr>" 
-            markup += `<td>${element.fecha}</td>`
-            markup += `<td>${element.hora}</td>`
-            markup += `<td>${element.lat}</td>`
-            markup += `<td>${element.long}</td>`
+            markup += `<td style="margin:.10rem;">${element.fecha}</td>`
+            markup += `<td style="margin:.10rem;">${element.hora}</td>`
+            markup += `<td style="margin:.10rem;">${element.lat}</td>`
+            markup += `<td style="margin:.10rem;">${element.long}</td>`
             markup += "</tr>"
             var marker = L.marker([parseFloat(element.lat), parseFloat(element.long)]).addTo(map)
             .bindPopup('Fecha: '+element.fecha+'<br> hora: '+element.hora)
